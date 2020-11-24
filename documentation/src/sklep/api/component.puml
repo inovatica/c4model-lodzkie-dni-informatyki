@@ -37,24 +37,6 @@ Rel(paymentsService, db, "Zapisuje płatność do bazy")
 Rel(paymentsLibrary, payments, "Tworzy płatność u dostawcy")
 Rel(ordersService, email, "Wysyła potwierdzenie złożenia zamówienia")
 
-
-
-
-' Rel(client, spa, "Przegląda zawartość sklepu, zamawia produkty")
-' Rel(client, mobile, "Przegląda zawartość sklepu, zamawia produkty, śledzi paczkę")
-
-' Rel(www, spa, "Serwuje pliki HTML, CSS, JS, Obrazki")
-
-' Rel(spa, api, "Używa", "REST/JSON")
-' Rel(mobile, api, "Używa", "REST/JSON")
-
-' Rel(api, email, "Używa", "SMTP")
-' Rel(api, sms, "Używa", "REST/JSON")
-' Rel(api, delivery, "Używa", "REST/JSON")
-' Rel(api, payments, "Używa", "REST/JSON")
-' Rel(api, invoices, "Używa", "XML")
-' Rel(api, db, "Zapisuje/odczytuje", "SQL")
-
 @enduml
 
 
