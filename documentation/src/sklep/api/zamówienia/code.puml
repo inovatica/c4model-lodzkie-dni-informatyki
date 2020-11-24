@@ -1,0 +1,50 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+participant RequestResponse
+
+activate RequestResponse
+activate ProductsController
+
+RequestResponse -> ProductsController: getProducts()
+ProductsController->ProductsController: validateData()
+
+activate ProductsModel
+ProductsController -> ProductsModel: getProducts(categoriesList, filters)
+
+activate CacheService
+ProductsModel -> CacheService: getProductsIfExists(categoriesList, filters)
+
+activate Redis
+CacheService -> Redis: exists(key)
+Redis --> CacheService: null
+deactivate Redis
+
+CacheService --> ProductsModel: false
+deactivate CacheService
+
+activate Database
+ProductsModel -> Database: select * from products where ...
+Database --> ProductsModel: <<productsList>>
+deactivate Database
+
+activate CacheService
+ProductsModel -> CacheService: storeProducts(categoriesList, filters, products)
+
+activate Redis
+CacheService -> Redis: set(key, data)
+Redis --> CacheService: true
+deactivate Redis
+
+CacheService --> ProductsModel: true
+deactivate CacheService
+
+ProductsModel --> ProductsController: <<products>>
+deactivate ProductsModel
+
+ProductsController --> RequestResponse: <<products>>
+
+deactivate ProductsController
+deactivate RequestResponse
+@enduml

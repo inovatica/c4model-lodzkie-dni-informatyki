@@ -1,0 +1,25 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Context.puml
+
+Person(client, "Klient", "Gość / użytkownik robiący zakupy w sklepie")
+Person(customerService, "Obsługa klienta", "Osoba odpowiedzialna za obsługę zamówień")
+Person(admin, "Administrator", "Guru i wyrocznia")
+
+System(ecommerce, "e-commerce", "Nasz znamienity system e-commerce")
+System_Ext(email, "Email", "Wysyłanie emaili tranzakcyjnych")
+System_Ext(sms, "SMS", "Wysyłanie powiadomień SMS")
+System_Ext(delivery, "Kurierzy", "Nadawanie i wysyłanie paczek")
+System_Ext(invoices, "Fakturowanie", "System do rozliczeń")
+System_Ext(payments, "Płatności", "Płatności on-line")
+
+Rel(client, ecommerce, "Używa", "HTTPS")
+Rel(customerService, ecommerce, "Używa", "HTTPS")
+Rel(admin, ecommerce, "Używa", "HTTPS")
+
+Rel(ecommerce, email, "Używa", "SMTP")
+Rel(ecommerce, sms, "Używa", "REST/JSON")
+Rel(ecommerce, delivery, "Używa", "REST/JSON")
+Rel(ecommerce, payments, "Używa", "REST/JSON")
+Rel(payments, ecommerce, "Powiadamia", "REST/JSON")
+Rel(ecommerce, invoices, "Używa", "XML")
+@enduml

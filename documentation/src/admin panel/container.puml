@@ -1,0 +1,30 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+Person(admin, "Admin", "Osoba wyznaczona do zarządzania sklepem")
+
+System_Boundary(ecommerce, "Panel admina"){
+    Container(www, "Web Site", "nginx", "Serwuje pliki statyczne")
+    Container(spa, "SPA", "ReactJS", "Aplikacja klienta uruchamiana w przeglądarce")
+    Container(api, "API", "PHP / Docker container", "Serwuje API sklepu")
+
+    ContainerDb(db, "Database", "MariaDB", "Przechowuje produkty, zamówienia, dane użytkowników")
+}
+
+System_Ext(email, "Email", "Wysyłanie ponaglenia płatności")
+System_Ext(payments, "Płatności", "Obsługuje zwroty")
+
+Rel(admin, www, "Chce zarządzać sklepem")
+Rel(admin, spa, "Przegląda produkty, zamówienia, stany magazynowe")
+
+Rel(www, spa, "Serwuje pliki HTML, CSS, JS, Obrazki")
+
+Rel(spa, api, "Używa", "REST/JSON")
+
+Rel(api, email, "Używa", "SMTP")
+Rel(api, payments, "Używa", "REST/JSON")
+Rel(api, db, "Zapisuje/odczytuje", "SQL")
+
+@enduml
+
+

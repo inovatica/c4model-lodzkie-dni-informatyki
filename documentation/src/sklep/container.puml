@@ -1,0 +1,38 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+Person_Ext(client, "Klient", "Gość / użytkownik robiący zakupy w sklepie")
+
+System_Boundary(ecommerce, "Nasz znamienity system e-commerce"){
+    Container(www, "Web Site", "nginx", "Serwuje pliki statyczne")
+    Container(spa, "SPA", "ReactJS", "Aplikacja klienta uruchamiana w przeglądarce")
+    Container(mobile, "Aplikacja mobilna", "Flutter", "Aplikacja mobilna odpalana na Android/iOS")
+    Container(api, "API", "PHP / Docker container", "Serwuje API sklepu")
+
+    ContainerDb(db, "Database", "MariaDB", "Przechowuje produkty, zamówienia, dane użytkowników")
+}
+System_Ext(email, "Email", "Wysyłanie emaili tranzakcyjnych")
+System_Ext(sms, "SMS", "Wysyłanie powiadomień SMS")
+System_Ext(delivery, "Kurierzy", "Nadawanie i wysyłanie paczek")
+System_Ext(invoices, "Fakturowanie", "System do rozliczeń")
+System_Ext(payments, "Płatności", "Płatności on-line")
+
+Rel(client, www, "Chce przeglądać sklep")
+Rel(client, spa, "Przegląda zawartość sklepu, zamawia produkty")
+Rel(client, mobile, "Przegląda zawartość sklepu, zamawia produkty, śledzi paczkę")
+
+Rel(www, spa, "Serwuje pliki HTML, CSS, JS, Obrazki")
+
+Rel(spa, api, "Używa", "REST/JSON")
+Rel(mobile, api, "Używa", "REST/JSON")
+
+Rel(api, email, "Używa", "SMTP")
+Rel(api, sms, "Używa", "REST/JSON")
+Rel(api, delivery, "Używa", "REST/JSON")
+Rel(api, payments, "Używa", "REST/JSON")
+Rel(api, invoices, "Używa", "XML")
+Rel(api, db, "Zapisuje/odczytuje", "SQL")
+
+@enduml
+
+

@@ -1,0 +1,60 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Component.puml
+
+Container(spa, "Klient", "Gość / użytkownik robiący zakupy w sklepie")
+
+Boundary(api, "ReactJS", "Aplikacja klienta uruchamiana w przeglądarce"){
+    Component(productsController, "Produkty", "PHP Controller", "Obsługuje żądanie, waliduje dane")
+    Component(ordersController, "Zamówienia", "PHP Controller", "Obsługuje żądanie, waliduje dane")
+    Component(ordersService, "Seriws zamówień", "PHP Class", "Sprawdza dostępność produktów, składa zamówienie")
+    Component(paymentsService, "Seriws płatności", "PHP Class", "Kompletuje dane")
+    Component(paymentsLibrary, "Biblioteka płatności", "PHP Vendor SDK", "Łączy się z dostawcą płatności, zlececa wygenerowanie linka płatności")
+
+    Component(productsModel, "Model produktów", "Model ORM", "Dostarcza struktury oraz dane związane z produktem")
+    Component(cacheService, "Serwis do cacheowania danych", "PHP Redis Library", "Zarządza danymi przechowywanymi w cache")
+}
+
+ContainerDb(db, "Database", "MariaDB", "Przechowuje produkty, zamówienia, dane użytkowników")
+
+System_Ext(email, "Email", "Wysyłanie emaili tranzakcyjnych")
+System_Ext(payments, "Płatności", "Płatności on-line")
+System_Ext(redis, "Redis", "System Cache key-value")
+
+Rel(spa, productsController, "Pobiera produkty")
+Rel(spa, ordersController, "Składa zamówienie")
+
+Rel(productsController, productsModel, "Pobiera produkty")
+Rel(productsModel, cacheService, "Sprawdza czy produkty są w cache")
+Rel(cacheService, redis, "Używa")
+Rel(productsModel, db, "Pobiera produkty z DB")
+
+Rel(ordersController, ordersService, "Zleca zamówienie")
+Rel(ordersService, db, "Zapisuje zamówienie do bazy")
+Rel(ordersService, paymentsService, "Zleca wygenerowanie płatności")
+Rel(paymentsService, paymentsLibrary, "Zleca wygenerowanie płatności")
+Rel(paymentsService, db, "Zapisuje płatność do bazy")
+Rel(paymentsLibrary, payments, "Tworzy płatność u dostawcy")
+Rel(ordersService, email, "Wysyła potwierdzenie złożenia zamówienia")
+
+
+
+
+' Rel(client, spa, "Przegląda zawartość sklepu, zamawia produkty")
+' Rel(client, mobile, "Przegląda zawartość sklepu, zamawia produkty, śledzi paczkę")
+
+' Rel(www, spa, "Serwuje pliki HTML, CSS, JS, Obrazki")
+
+' Rel(spa, api, "Używa", "REST/JSON")
+' Rel(mobile, api, "Używa", "REST/JSON")
+
+' Rel(api, email, "Używa", "SMTP")
+' Rel(api, sms, "Używa", "REST/JSON")
+' Rel(api, delivery, "Używa", "REST/JSON")
+' Rel(api, payments, "Używa", "REST/JSON")
+' Rel(api, invoices, "Używa", "XML")
+' Rel(api, db, "Zapisuje/odczytuje", "SQL")
+
+@enduml
+
+
